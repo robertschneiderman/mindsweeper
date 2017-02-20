@@ -7,6 +7,7 @@ import {
          ATTACK_SPACE,
          END_GAME,
          NEW_GAME,
+         FLAG_SPACE,
        } from './actions';
 
 const getAdjacents = (boardSize, y, x) => {
@@ -80,6 +81,9 @@ const gameReducer = (state = initialState, action) => {
       return newState;
     case NEW_GAME:
       newState.phase = 'setup';
+      return newState;
+    case FLAG_SPACE:
+      newState.grid[action.payload.y][action.payload.x].flagged = !newState.grid[action.payload.y][action.payload.x].flagged;
       return newState;
     default:
       return state;

@@ -30,8 +30,10 @@ class Space extends Component {
     // }
 
     attackSpace() {
-        let { x, y, grid } = this.props;
-        if (grid[y][x].value === 'bomb') {
+        let { x, y, grid, flagging } = this.props;
+        if (flagging) {
+            this.props.flagSpace({y, x});
+        } else if (grid[y][x].value === 'bomb') {
             this.props.endGame();
         } else {
             this.props.attackSpace({y, x});            
@@ -46,24 +48,36 @@ class Space extends Component {
         switch(revealed) {
         case true:
             if (value === 'bomb') {
-                return 'B!';
+                return <img className="img-a" src="./static/images/bomb.svg" />;
             } else {
-                return adjacentBombs === 0 ? '' : adjacentBombs;
+                return adjacentBombs === 0 ? '' : <span className="img-a">{adjacentBombs}</span>;
             }
         case false:
             if (flagged) {
-                return 'F';
+                return <img className="img-a" src="./static/images/flag.svg" />;
             } else {
-                return 'O';
+                return '';
             }
         }
     }
 
+    revealAll() {
+        let { value, flagged, adjacentBombs } = this.props;
+        if (value === 'bomb') {
+            return <img className="img-a" src="./static/images/bomb.svg" />;
+        } else if (flagged) {
+            return <img className="img-a" src="./static/images/flag.svg" />;
+        } else {
+            return adjacentBombs === 0 ? '' : <span className="img-a">{adjacentBombs}</span>;
+        }        
+    }
+
     render() {
-        let { x, y } = this.props;
+        let { x, y, phase, revealed } = this.props;
+        let className = !revealed ? "space box-a unrevealed" : "space box-a";
         return(
-            <div className="space box-a" onClick={this.attackSpace.bind(this, {x, y})}>
-                {this.getValue()}
+            <div className={className} onClick={this.attackSpace.bind(this, {x, y})}>
+                {(phase === 'over') ? this.revealAll() : this.getValue()}
             </div>
         );
     }

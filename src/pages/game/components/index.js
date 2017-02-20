@@ -9,14 +9,31 @@ import Setup from './Setup';
 
 export class Game extends Component {
 
+    constructor(props) {
+        super(props);
+        this.state = {
+          flagging: false
+        };
+    }
+  
+
+  componentDidMount() {
+    document.addEventListener('keyup', (e) => {
+      if (e.key === 'f') {
+        this.setState({flagging: !this.state.flagging});
+      }
+    });
+  }
+
   newGame() {
     this.props.newGame();
   }
 
   render() {
     let {phase, bombs} = this.props;
+    let style = this.state.flagging ? {width: '100%', height: '100%', cursor: `copy`} : {width: '100%', height: '100%'};
     return (
-      <div className="game" style={{width: '100%', height: '100%'}}>
+      <div className="game" style={style}>
         {
           (phase === 'setup') ?
             <Setup {...this.props} />
@@ -28,7 +45,7 @@ export class Game extends Component {
                 <button onClick={this.newGame.bind(this)} className="btn-c">Play Again?</button>
               </div>
               : ''}
-              <Board {...this.props} />
+              <Board {...this.props} flagging={this.state.flagging} />
             </div>
         }
       </div>
@@ -57,7 +74,8 @@ function mapDispatchToProps(dispatch) {
     startGame : payload => dispatch(actions.startGame(payload)),
     attackSpace : payload => dispatch(actions.attackSpace(payload)),
     endGame : payload => dispatch(actions.endGame(payload)),
-    newGame : payload => dispatch(actions.newGame(payload))
+    newGame : payload => dispatch(actions.newGame(payload)),
+    flagSpace : payload => dispatch(actions.flagSpace(payload))
   };
 }
 

@@ -10,7 +10,7 @@ class Row extends Component {
         let spaces = [];
         for (let i = 0; i < this.props.boardSize; i++) {
             let space = this.props.grid[this.props.y][i];
-            spaces.push(<Space x={i} y={this.props.y} revealed={space.revealed} adjacentBombs={space.adjacentBombs} value={space.value} {...this.props} />);
+            spaces.push(<Space x={i} y={this.props.y} revealed={space.revealed} adjacentBombs={space.adjacentBombs} value={space.value} flagged={space.flagged} flagging={this.props.flagging} {...this.props} />);
         }
 
         return spaces;
