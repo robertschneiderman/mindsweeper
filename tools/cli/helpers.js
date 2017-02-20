@@ -115,6 +115,13 @@ module.exports = {
     return _.findLastIndex(lines, l => str.test(l));
   },
 
+  getFirstEmptyLine(lines) {
+    for (let i = 0; i < lines.length; i++) {
+      let line = lines[i];
+      if (line === '') return i;
+    }
+  },  
+
   getToSave(filesToSave) {
     return function toSave(filePath, fileContent) {
       filesToSave.push({

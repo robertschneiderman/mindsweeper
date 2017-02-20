@@ -1,29 +1,27 @@
 import merge from 'lodash/merge';
 import initialState from './initialState';
 
-import { RECEIVE_GAMES,
-         RECEIVE_GAME,
-         REMOVE_GAME,
-         GAME_ERROR
-       } from './constants';
+import {
+         SET_DIFFICULTY,
+         START_GAME,
+         ATTACK_SPACE,
+       } from './actions';
 
-const gameReducer = (state = {}, action) => {
+const gameReducer = (state = initialState, action) => {
+  let newState = merge({}, state);
   switch(action.type){
-    case RECEIVE_GAMES:
-      let newState = {};
-      action.games.forEach(game => {
-        newState[game.id] = game;
-      });
+    case SET_DIFFICULTY:
+      newState.payload = action.payload;
       return newState;
-    case RECEIVE_GAME:
-      const newTemplate = {[action.game.id]: action.game};
-      return merge({}, state, newTemplate);
-    case REMOVE_GAME:
-      newState = merge({}, state);
-      delete newState[action.game.id];
+    case START_GAME:
+      newState.bombs = action.payload.bombs;
+      newState.boardSize = action.payload.boardSize;
+      newState.grid = action.payload.grid;
+      newState.phase = 'playing';
       return newState;
-    case GAME_ERROR:
-      alert(action.error);
+    case ATTACK_SPACE:
+      newState.grid[action.payload.y][action.payload.x].revealed = true;
+      return newState;
     default:
       return state;
   }

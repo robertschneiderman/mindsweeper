@@ -5,32 +5,47 @@ import * as actions from '../redux/actions';
 
 import Display from './Display';
 import Board from './Board';
+import Setup from './Setup';
 
 export class Game extends Component {
-  static propTypes = {
-    actions: PropTypes.object.isRequired,
-  };
-
   render() {
+    let {phase, bombs} = this.props;
     return (
       <div className="game">
-        <Display />
-        <Board />
+        {
+          (phase === 'setup') ?
+            <Setup {...this.props} />
+            :
+            <div>
+              <Display {...this.props} />
+              <Board {...this.props} />
+            </div>
+        }
       </div>
     );
   }
 }
 
+Game.PropTypes = {
+    actions: PropTypes.object.isRequired,
+};
+
 /* istanbul ignore next */
 function mapStateToProps(state) {
+  
   return {
+    phase: state.game.phase,
+    boardSize: state.game.boardSize,
+    bombs: state.game.bombs,
+    grid: state.game.grid
   };
 }
 
 /* istanbul ignore next */
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators({ ...actions }, dispatch)
+    startGame : payload => dispatch(actions.startGame(payload)),
+    attackSpace : payload => dispatch(actions.attackSpace(payload)),
   };
 }
 
