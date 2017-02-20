@@ -68,6 +68,28 @@ class Setup extends Component {
         return coords;
     }
 
+    getAdjacents(boardSize, y, x) {
+        let adjacents = [];
+        for (let a = -1; a <= 1; a++) {
+            for (let b = -1; b <= 1; b++) {
+                if (a === 0 && b === 0 ) continue;
+                let coordX = x + a;
+                let coordY = y + b;
+                if (coordX < 0 || coordX >= boardSize) continue;
+                if (coordY < 0 || coordY >= boardSize) continue;
+                adjacents.push([coordY, coordX]);
+            }
+        }
+        return adjacents;
+    }
+
+    getAdacentBombCount(grid, boardSize, y, x) {
+        let adjacents = this.getAdjacents(boardSize, y, x);
+        let bombs = adjacents.filter(adjacent => grid[adjacent[0]][adjacent[1]].value === 'bomb');
+        // this.setState({adjacents: bombs.length});
+        return bombs.length;
+    }    
+
     generateGrid(boardSize, bombs) {
         let grid = [];
         for (let i = 1; i <= boardSize; i++) {
@@ -76,9 +98,18 @@ class Setup extends Component {
                 grid[grid.length-1].push({revealed: false, flagged: false, value: 'blank'});
             }
         }
+
         bombs.forEach(bomb => {
             grid[bomb[0]][bomb[1]].value = 'bomb';
         });
+
+        grid.forEach((row, y) => {
+            row.forEach((space, x) => {
+                let bombCount = this.getAdacentBombCount(grid, boardSize, y, x);
+                space.adjacentBombs = bombCount;
+            });
+        });
+
         return grid;
     }
 

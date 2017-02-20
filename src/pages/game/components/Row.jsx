@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import Space from './space';
+import Space from './Space';
 
 class Row extends Component {
     constructor(props) {
@@ -10,8 +10,7 @@ class Row extends Component {
         let spaces = [];
         for (let i = 0; i <= 9; i++) {
             let space = this.props.grid[this.props.y][i];
-            let { revealed, attacked } = this.props;
-            spaces.push(<Space x={i} y={this.props.y} revealed={revealed} attacked={attacked} {...this.props} />);
+            spaces.push(<Space x={i} y={this.props.y} revealed={space.revealed} adjacentBombs={space.adjacentBombs} value={space.value} {...this.props} />);
         }
 
         return spaces;

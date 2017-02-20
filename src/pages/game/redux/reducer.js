@@ -7,6 +7,56 @@ import {
          ATTACK_SPACE,
        } from './actions';
 
+const getAdjacents = (boardSize, y, x) => {
+    let adjacents = [];
+    for (let a = -1; a <= 1; a++) {
+        for (let b = -1; b <= 1; b++) {
+            if (a === 0 && b === 0 ) continue;
+            let coordX = x + a;
+            let coordY = y + b;
+            if (coordX < 0 || coordX >= boardSize) continue;
+            if (coordY < 0 || coordY >= boardSize) continue;
+            adjacents.push([coordY, coordX]);
+        }
+    }
+    return adjacents;
+};
+
+const getSpace = (grid, y, x) => {
+  return grid[y][x];
+};
+
+const inQueue = (queue, y, x) => {
+  let finds = queue.filter(coord => coord[0] === y && coord[1] === x);
+  return finds > 0;
+};
+
+const getAttackedSpaces = (grid, boardSize, y, x) => {
+  // debugger;
+
+  let queue = [[y, x]];
+
+  while (queue.length > 0) {
+    // debugger;
+    let coord = queue[0];
+    let space = grid[coord[0]][coord[1]];
+    space.revealed = true;
+    let adjacents = getAdjacents(boardSize, coord[0], coord[1]);
+    queue.shift();
+
+    adjacents.forEach(adjacent => {
+      let adjSpace = grid[adjacent[0]][adjacent[1]];
+      // debugger;
+      if (adjSpace.value !== 'bomb' &&
+          !adjSpace.revealed && !inQueue(queue, adjacent[0], adjacent[1])
+          && adjSpace.adjacentBombs === 0) {
+          queue.push([adjacent[0], adjacent[1]]);
+      }
+    });
+
+  }
+};       
+
 const gameReducer = (state = initialState, action) => {
   let newState = merge({}, state);
   switch(action.type){
@@ -20,7 +70,8 @@ const gameReducer = (state = initialState, action) => {
       newState.phase = 'playing';
       return newState;
     case ATTACK_SPACE:
-      newState.grid[action.payload.y][action.payload.x].revealed = true;
+      getAttackedSpaces(newState.grid, newState.boardSize, action.payload.y, action.payload.x);
+      // newState.grid[action.payload.y][action.payload.x].revealed = true;
       return newState;
     default:
       return state;
