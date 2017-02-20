@@ -30,11 +30,15 @@ class Space extends Component {
     // }
 
     attackSpace() {
-        let { x, y } = this.props;
+        let { x, y, grid } = this.props;
+        if (grid[y][x].value === 'bomb') {
+            this.props.endGame();
+        } else {
+            this.props.attackSpace({y, x});            
+        }
         // let spacesToReveal = [];
         // this.getAllSpacesToReveal(spacesToReveal, x, y);
 
-        this.props.attackSpace({y, x});
     }
 
     getValue() {

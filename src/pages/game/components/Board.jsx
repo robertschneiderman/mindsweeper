@@ -8,7 +8,7 @@ class Board extends Component {
 
     renderRows() {
         let rows = [];
-        for (let i = 0; i <= 9; i++) {
+        for (let i = 0; i < this.props.boardSize; i++) {
             rows.push(<Row y={i} {...this.props} />);
         }
         return rows;
@@ -16,7 +16,7 @@ class Board extends Component {
 
     render() {
         return(
-            <div className="board">
+            <div className="board c-d">
                 {this.renderRows()}
             </div>
         );

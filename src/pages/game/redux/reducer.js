@@ -5,6 +5,8 @@ import {
          SET_DIFFICULTY,
          START_GAME,
          ATTACK_SPACE,
+         END_GAME,
+         NEW_GAME,
        } from './actions';
 
 const getAdjacents = (boardSize, y, x) => {
@@ -72,6 +74,12 @@ const gameReducer = (state = initialState, action) => {
     case ATTACK_SPACE:
       getAttackedSpaces(newState.grid, newState.boardSize, action.payload.y, action.payload.x);
       // newState.grid[action.payload.y][action.payload.x].revealed = true;
+      return newState;
+    case END_GAME:
+      newState.phase = 'over';    
+      return newState;
+    case NEW_GAME:
+      newState.phase = 'setup';
       return newState;
     default:
       return state;
